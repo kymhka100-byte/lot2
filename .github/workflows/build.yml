@@ -25,14 +25,17 @@ jobs:
         pip install --upgrade pip
         pip install --upgrade buildozer cython kivy
 
+    - name: Pre-accept Android SDK Licenses
+      run: |
+        mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+        echo -e "\n2477218778daf9088f9a34d8820c74902146e2a0" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+        echo -e "\nd9826f5c792e78475e734857097002b422d47751" > ~/.buildozer/android/platform/android-sdk/licenses/android-googletv-license
+        echo -e "\n60100719fe771612639b22a7d30142f7aea32c29" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-arm-dbt-license
+
     - name: Build with Buildozer
       run: |
-        # Buildozer가 필요 파일 및 SDK를 다운로드하도록 1차 실행
-        buildozer -v android debug || true
-        # SDK 라이선스 전체 자동 승인 처리
-        yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        # APK 최종 빌드 실행
-        buildozer -v android debug
+        APP_ANDROID_ACCEPT_SDK_LICENSES=1 buildozer -v android debug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
