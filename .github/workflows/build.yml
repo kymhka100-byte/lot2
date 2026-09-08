@@ -25,12 +25,13 @@ jobs:
         pip install --upgrade pip
         pip install --upgrade buildozer cython kivy
 
-    - name: Accept Android SDK Licenses
-      run: |
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
     - name: Build with Buildozer
       run: |
+        # Buildozer가 필요 파일 및 SDK를 다운로드하도록 1차 실행
+        buildozer -v android debug || true
+        # SDK 라이선스 전체 자동 승인 처리
+        yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        # APK 최종 빌드 실행
         buildozer -v android debug
 
     - name: Upload APK Artifact
