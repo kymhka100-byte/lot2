@@ -18,17 +18,25 @@ jobs:
       with:
         python-version: '3.10'
 
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libffi-dev libssl-dev ccache git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake gettext lld
+        sudo apt-get install -y build-essential libffi-dev libssl-dev ccache git zip unzip python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake gettext lld
         pip install --upgrade pip
         pip install --upgrade buildozer cython kivy
 
     - name: Build with Buildozer
       run: |
-        # Buildozer가 라이선스를 대화형 묻지 않고 자동 승인하도록 환경변수 설정 후 실행
-        ACCEPT_SDK_LICENSE=1 APP_ANDROID_ACCEPT_SDK_LICENSES=1 buildozer -v android debug
+        buildozer -v android debug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
